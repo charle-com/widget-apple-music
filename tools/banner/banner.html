@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Platine banner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&display=block" rel="stylesheet">
+<style>
+  :root {
+    --wall-top: #55707a;
+    --wall-bottom: #2c3f47;
+    --sun: #f2b25e;
+    --ink: #f6f1e7;
+    --ink-soft: rgba(246, 241, 231, 0.72);
+    --gap: 24px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1280px; height: 672px; overflow: hidden; }
+  body {
+    position: relative;
+    background: linear-gradient(168deg, var(--wall-top) 0%, var(--wall-bottom) 100%);
+    font-family: -apple-system, "SF Pro Text", system-ui, sans-serif;
+    color: var(--ink);
+  }
+  /* Signature : la lumière du soir à travers des persiennes, projetée sur le mur. */
+  .light {
+    position: absolute;
+    left: -6%; top: -34%;
+    width: 86%; height: 150%;
+    background: repeating-linear-gradient(to bottom, var(--sun) 0 30px, transparent 30px 66px);
+    transform: skewY(-9deg);
+    filter: blur(7px);
+    opacity: 0.26;
+    mix-blend-mode: screen;
+    -webkit-mask-image: linear-gradient(98deg, #000 30%, transparent 88%);
+            mask-image: linear-gradient(98deg, #000 30%, transparent 88%);
+  }
+  .glow {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(55% 75% at 18% 22%, rgba(242, 178, 94, 0.42), transparent 70%),
+      radial-gradient(60% 80% at 100% 100%, rgba(14, 26, 31, 0.55), transparent 70%);
+  }
+  .grain {
+    position: absolute; inset: 0; opacity: 0.16; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 1 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>");
+  }
+  .desk { position: absolute; left: 64px; top: 48px; width: 1152px; height: 576px; }
+  .desk img {
+    position: absolute; display: block;
+    border-radius: 24px;
+    box-shadow: 0 34px 60px -22px rgba(8, 16, 20, 0.62), 0 10px 22px -8px rgba(8, 16, 20, 0.4);
+  }
+  .xl { left: 0; top: 0; width: 764px; height: 382px; }
+  .lg { left: 788px; top: 0; width: 364px; height: 382px; }
+  .md { left: 0; top: 406px; width: 364px; height: 170px; }
+  .sm { left: 388px; top: 406px; width: 170px; height: 170px; }
+  .title { position: absolute; left: 606px; top: 406px; width: 546px; height: 170px; display: flex; flex-direction: column; justify-content: center; }
+  h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-variation-settings: "wdth" 90, "opsz" 96;
+    font-weight: 800; font-size: 88px; line-height: 0.86; letter-spacing: -0.025em;
+  }
+  .lede { margin-top: 16px; font-size: 21px; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em; }
+  .meta { margin-top: 8px; font-size: 14.5px; font-weight: 500; color: var(--ink-soft); letter-spacing: 0.01em; }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="light"></div>
+  <div class="grain"></div>
+  <div class="desk">
+    <img class="xl" src="render/extraLarge.png" alt="">
+    <img class="lg" src="render/large.png" alt="">
+    <img class="md" src="render/medium.png" alt="">
+    <img class="sm" src="render/small.png" alt="">
+    <div class="title">
+      <h1>Platine</h1>
+      <p class="lede">Apple Music's Up Next queue, on your Mac desktop.</p>
+      <p class="meta">Four widget sizes. Play, pause and skip from the desktop. macOS 15+.</p>
+    </div>
+  </div>
+</body>
+</html>

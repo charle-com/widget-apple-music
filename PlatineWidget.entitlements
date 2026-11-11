@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- PluginKit n'enregistre une extension d'app que si elle est sandboxée. -->
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<!-- Lecture seule de l'état et des pochettes écrits par l'app (pas de conteneur de groupe, voir Store.swift). -->
+	<key>com.apple.security.temporary-exception.files.home-relative-path.read-only</key>
+	<array>
+		<string>/Library/Application Support/Platine/</string>
+	</array>
+</dict>
+</plist>
