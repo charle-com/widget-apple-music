@@ -23,15 +23,45 @@ static id kv(id obj, NSString *key) {
 }
 static NSString *str(id v) { return [v isKindOfClass:NSString.class] ? v : @""; }
 static double dbl(id v) { return [v isKindOfClass:NSNumber.class] ? [v doubleValue] : 0; }
+// Identifiant de catalogue Apple Music, vide si la piste n'en a pas (fichier local, par exemple).
+static NSString *storeID(id v) {
+  return ([v isKindOfClass:NSNumber.class] && [v longLongValue] > 0) ? [NSString stringWithFormat:@"%lld", [v longLongValue]] : @"";
+}
+
+// Pour une piste de la bibliothèque, Musique ne donne pas d'adresse de pochette mais un identifiant interne.
+// L'image de la piste en cours, elle, est jointe aux infos de lecture : on la pose dans un fichier temporaire
+// que l'app hôte lit. Un seul fichier à la fois, nommé d'après l'identifiant de la pochette.
+static NSString *nowArtID;
+static NSString *nowArtPath;
+static NSString *nowArtFile(NSDictionary *info) {
+  NSString *artID = str(info[@"kMRMediaRemoteNowPlayingInfoArtworkIdentifier"]);
+  NSData *data = info[@"kMRMediaRemoteNowPlayingInfoArtworkData"];
+  if (!artID.length || ![data isKindOfClass:NSData.class] || data.length == 0) return nil;
+  if ([artID isEqualToString:nowArtID]) return nowArtPath;
+  uint64_t h = 1469598103934665603ULL;  // FNV-1a : un nom de fichier stable d'un lancement à l'autre
+  for (const unsigned char *c = (const unsigned char *)artID.UTF8String; *c; c++) { h ^= *c; h *= 1099511628211ULL; }
+  NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"platine-art-%016llx", h]];
+  if (![data writeToFile:path atomically:YES]) return nil;
+  if (nowArtPath && ![nowArtPath isEqualToString:path]) [NSFileManager.defaultManager removeItemAtPath:nowArtPath error:nil];
+  nowArtID = artID;
+  nowArtPath = path;
+  return path;
+}
 
 static void emit(NSDictionary *info, BOOL playing, id queue) {
   NSMutableArray *items = [NSMutableArray array];
   NSArray *content = queue ? kv(queue, @"contentItems") : nil;
+  NSString *nowArt = str(info[@"kMRMediaRemoteNowPlayingInfoArtworkIdentifier"]);
+  NSString *nowFile = nowArtFile(info) ?: @"";
   if ([content isKindOfClass:NSArray.class]) {
     for (id item in content) {
       id md = kv(item, @"metadata");
       if (!md) continue;
+      // La pochette arrive sous trois formes : une adresse (radio, catalogue), sinon l'identifiant de
+      // catalogue de la piste (l'app hôte retrouve l'adresse), sinon l'image locale de la piste en cours.
       NSString *art = str(kv(md, @"artworkIdentifier"));
+      NSString *store = storeID(kv(md, @"iTunesStoreIdentifier"));
+      if (!store.length) store = storeID(kv(md, @"iTunesStoreSubscriptionIdentifier"));
       [items addObject:@{
         @"id": str(kv(item, @"identifier")),
         @"title": str(kv(md, @"title")),
@@ -39,6 +69,8 @@ static void emit(NSDictionary *info, BOOL playing, id queue) {
         @"album": str(kv(md, @"albumName")),
         @"duration": @(dbl(kv(md, @"duration"))),
         @"art": [art hasPrefix:@"http"] ? art : @"",
+        @"store": store,
+        @"file": (art.length && [art isEqualToString:nowArt]) ? nowFile : @"",
       }];
     }
   }
@@ -54,14 +86,15 @@ static void emit(NSDictionary *info, BOOL playing, id queue) {
   // File illisible : on garde au moins la piste en cours, tirée des infos de lecture.
   NSString *title = str(info[@"kMRMediaRemoteNowPlayingInfoTitle"]);
   if (items.count == 0 && title.length) {
-    NSString *art = str(info[@"kMRMediaRemoteNowPlayingInfoArtworkIdentifier"]);
     [items addObject:@{
       @"id": nowID.length ? nowID : title,
       @"title": title,
       @"artist": str(info[@"kMRMediaRemoteNowPlayingInfoArtist"]),
       @"album": str(info[@"kMRMediaRemoteNowPlayingInfoAlbum"]),
       @"duration": @(dbl(info[@"kMRMediaRemoteNowPlayingInfoDuration"])),
-      @"art": [art hasPrefix:@"http"] ? art : @"",
+      @"art": [nowArt hasPrefix:@"http"] ? nowArt : @"",
+      @"store": storeID(info[@"kMRMediaRemoteNowPlayingInfoiTunesStoreIdentifier"]),
+      @"file": nowFile,
     }];
   }
 

@@ -117,9 +117,10 @@ final class Coordinator: NSObject, NSApplicationDelegate {
         let mine = generation
         Task {
             var keys = [String?](repeating: nil, count: snapshot.items.count)
+            await ArtworkCache.shared.resolve(snapshot.items)
             await withTaskGroup(of: (Int, String?).self) { group in
                 for (i, item) in snapshot.items.enumerated() {
-                    group.addTask { (i, await ArtworkCache.shared.ensure(item.art)) }
+                    group.addTask { (i, await ArtworkCache.shared.ensure(item)) }
                 }
                 for await (i, key) in group { keys[i] = key }
             }

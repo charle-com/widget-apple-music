@@ -42,7 +42,7 @@ The queue is the hard part: neither AppleScript nor any public API exposes "Up N
 - **Playback buttons.** Previous, play or pause, next, on every size from medium up.
 - **Glass made from the cover.** The background is the album cover, blurred, saturated and darkened just enough for white text to stay readable, even under a white cover.
 - **It moves on its own.** The widget receives one frame per upcoming track, dated from the track durations, so it steps to the next song without asking macOS for a reload. The progress bar is animated by the system.
-- **Out of the way.** No Dock icon, no menu bar icon. The helper starts at login and only works while Music is open. The only network traffic is the download of covers from Apple's artwork servers.
+- **Out of the way.** No Dock icon, no menu bar icon. The helper starts at login and only works while Music is open. The only network traffic goes to Apple: the download of covers and, for tracks played from your library, a lookup of their cover address in the public catalogue (iTunes Lookup).
 
 ## Install
 

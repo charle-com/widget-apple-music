@@ -33,7 +33,7 @@ Le difficile, c'est la file : ni AppleScript ni aucune API publique ne donne « 
 - **Les boutons.** Précédent, lecture ou pause, suivant, à partir de la taille moyenne.
 - **Un verre tiré de la pochette.** Le fond est la pochette de l'album, floutée, saturée et assombrie juste assez pour que le texte blanc reste lisible, même sous une pochette blanche.
 - **Il avance tout seul.** Le widget reçoit une image par piste à venir, datée d'après les durées : il passe à la chanson suivante sans demander de rechargement à macOS. La barre de progression est animée par le système.
-- **Discret.** Ni icône dans le Dock, ni dans la barre des menus. L'agent démarre à l'ouverture de session et ne travaille que quand Musique est ouverte. Seul trafic réseau : le téléchargement des pochettes sur les serveurs d'Apple.
+- **Discret.** Ni icône dans le Dock, ni dans la barre des menus. L'agent démarre à l'ouverture de session et ne travaille que quand Musique est ouverte. Seul trafic réseau, vers Apple uniquement : le téléchargement des pochettes et, pour les pistes de ta bibliothèque, la recherche de leur adresse dans le catalogue public (iTunes Lookup).
 
 ## Installer
 

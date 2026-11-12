@@ -7,8 +7,12 @@ struct Snapshot: Decodable {
         let artist: String
         let album: String
         let duration: Double
-        /// URL de la pochette, vide si la piste n'en a pas en ligne.
+        /// URL de la pochette, vide quand Musique n'en donne pas (piste de la bibliothèque).
         let art: String
+        /// Identifiant de catalogue Apple Music de la piste : il permet de retrouver l'adresse de la pochette.
+        let store: String?
+        /// Image de la pochette posée par l'adaptateur dans un fichier temporaire, piste en cours seulement.
+        let file: String?
     }
 
     /// Vrai si l'app en lecture est Musique (et pas un navigateur ou un autre lecteur).
